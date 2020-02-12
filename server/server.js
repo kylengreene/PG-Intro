@@ -42,8 +42,6 @@ app.get ('/songs', (req, res) =>{
 });
 
 app.post ('/songs', (req,res) =>{
-    console.log('in /songs POST');
-
-    
-    
+    console.log('in /songs POST', req.body);
+    res.send('buzz');
 })
