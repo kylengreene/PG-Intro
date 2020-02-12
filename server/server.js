@@ -38,6 +38,12 @@ app.get ('/songs', (req, res) =>{
         //catch any erors
         console.log(err);
     res.sendStatus( 500 );
-
     })
 });
+
+app.post ('/songs', (req,res) =>{
+    console.log('in /songs POST');
+
+    
+    
+})
