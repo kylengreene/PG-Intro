@@ -5,14 +5,16 @@ function onReady(){
     console.log('JS');
     getSongs();
     $('#addSongButton').on('click', addSong)
-    $('#output').on('click', '.delete', deleteClick)
+    $('#output').on('click', '.delete', deleteSongs)
+    $('#output').on('click', '.upVote', upVoteSong)
+    $('#output').on('click', '.downVote', downVoteSong)
 }
 
-function deleteClick (){
-    let selectedID = $(this).parent().data('id')
+function deleteSongs (){
+    let selectedId = $(this).parent().data('id')
         $.ajax({
             type: 'DELETE',
-            url: `/songs/${selectedID}`
+            url: `/songs/${selectedId}`
         }).then(function (response) {
             console.log('back from the DELETE with', response);
             getSongs(response);
@@ -25,7 +27,14 @@ function deleteClick (){
 function displaySongs(input) {
     $('#output').empty();
     for (let i = 0; i < input.length; i++) {
-        $('#output').append(`<li data-id=${input[i].id}>${input[i].id} ${input[i].track}: ${input[i].artist} on ${input[i].published.substring(0, 10)}<button class="delete">Delete</button></li>`); 
+        $('#output').append(`<li data-id=${input[i].id}>
+        ${input[i].rank} ${input[i].track}: 
+        ${input[i].artist} on 
+        ${input[i].published.substring(0, 10)}
+        <button class="delete">Delete</button>
+        <button class="upVote">UP</button>
+        <button class="downVote">DOWN</button>
+        </li>`); 
     }
 }
 
@@ -66,3 +75,38 @@ function addSong(){
     })
 }
 
+function upVoteSong (){
+    let selectedId = $(this).parent().data('id');
+   console.log(selectedId);
+   $.ajax({
+       type: 'PUT',
+       url: `/songs/${selectedId}`,
+       data: {
+           voteDirection: 'up'
+       }
+   }).then(function (response) {
+       console.log('back from the upVoteSong with', response);
+       getSongs();
+   }).catch(function (err) {
+       console.log(err);
+       alert('houston we have a problem');
+   })
+}
+
+function downVoteSong(){
+    let selectedId = $(this).parent().data('id');
+    console.log(selectedId);
+    $.ajax({
+        type: 'PUT',
+        url: `/songs/${selectedId}`,
+        data: {
+            voteDirection: 'down'
+        }
+    }).then(function (response) {
+        console.log('back from the downVoteSong with', response);
+        getSongs();
+    }).catch(function (err) {
+        console.log(err);
+        alert('houston we have a problem');
+    })
+}

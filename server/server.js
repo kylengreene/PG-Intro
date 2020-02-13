@@ -29,7 +29,7 @@ app.listen(port, ()=>{
 app.get ('/songs', (req, res) =>{
     console.log('in /songs GET');
     //set up a query
-    let queryString = 'SELECT * FROM "songs"';
+    let queryString = 'SELECT * FROM "songs" ORDER BY "rank" ASC';
     //try to run a query on our pool
     pool.query(queryString).then( ( results ) =>{
          // if successful, we'll respond with the rows from the results
@@ -53,10 +53,9 @@ app.post ('/songs', (req,res) =>{
     })
 })
 
-
 //DELETE FUNCTION BELOW
 app.delete('/songs/:id', (req, res) => {
-    console.log('hello from get/id',req.params.id);
+    console.log('hello from delete/id',req.params.id);
     let queryString = `DELETE FROM "songs" WHERE "id"= $1`;
     //try to run a query on our pool
     pool.query(queryString, [req.params.id]).then((results) => {
@@ -68,5 +67,19 @@ app.delete('/songs/:id', (req, res) => {
         //catch any erors
         console.log(err);
         res.sendStatus(500);
+    })
+});
+
+app.put('/songs/:id', (req, res) => {
+    console.log('hello from put/id', req.params.id, req.body);
+    let queryString = '';
+    if(req.body.voteDirection ==='up'){
+    queryString = `UPDATE "songs" SET "rank" = "rank" -1 WHERE "id"=${req.params.id}`
+    }
+    else if (req.body.voteDirection === 'down'){
+    queryString = `UPDATE "songs" SET "rank" = "rank" +1 WHERE "id"=${req.params.id}`
+    }
+    pool.query(queryString).then((results) =>{
+        res.sendStatus(200)
     })
 });
