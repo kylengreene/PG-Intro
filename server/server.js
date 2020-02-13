@@ -57,9 +57,9 @@ app.post ('/songs', (req,res) =>{
 //DELETE FUNCTION BELOW
 app.delete('/songs/:id', (req, res) => {
     console.log('hello from get/id',req.params.id);
-    let queryString = `DELETE FROM "songs" WHERE "id"= ${req.params.id}`;
+    let queryString = `DELETE FROM "songs" WHERE "id"= $1`;
     //try to run a query on our pool
-    pool.query(queryString).then((results) => {
+    pool.query(queryString, [req.params.id]).then((results) => {
         // if successful, we'll respond with the rows from the results
         console.log('back from id search with specific id');
 
